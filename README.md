@@ -1,4 +1,4 @@
-# SPECTER : AI-Powered Threat Intelligence Platform
+# SPECTER : Wire API-Powered AI Threat Intelligence Platform
 
 > Analyze any URL in seconds. Detect phishing, malware, and suspicious behavior with real-time threat intelligence powered by AI.
 
