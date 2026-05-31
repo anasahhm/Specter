@@ -18,7 +18,6 @@ const panelHeaderStyle = {
   fontSize: '8.5px',
   letterSpacing: '0.2em',
   textTransform: 'uppercase',
-  marginBottom: '0',
   fontFamily: '"Geist Mono", monospace',
   borderBottom: '1px solid rgba(0,170,255,0.12)',
   paddingBottom: '0.5rem',
