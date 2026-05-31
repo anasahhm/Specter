@@ -1,0 +1,36 @@
+{
+  "name": "specter-backend",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Specter - AI-Powered Digital Intelligence Platform Backend",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "node --watch src/index.js",
+    "start": "node src/index.js",
+    "build": "echo 'No build required for Node.js'",
+    "seed": "node src/scripts/seed.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "mongoose": "^8.0.0",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2",
+    "axios": "^1.6.0",
+    "express-rate-limit": "^7.1.5",
+    "helmet": "^7.1.0",
+    "@google/generative-ai": "^0.24.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  },
+  "keywords": [
+    "specter",
+    "threat-intelligence",
+    "ai",
+    "security"
+  ],
+  "author": "Specter Team",
+  "license": "MIT"
+}
