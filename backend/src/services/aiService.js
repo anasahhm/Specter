@@ -97,7 +97,7 @@ class AIService {
     }
   }
 
- _buildPrompt(targetType, targetValue, wireData) {
+_buildPrompt(targetType, targetValue, wireData) {
   const wj = wireData?.generatedJson || {};
 
   return `

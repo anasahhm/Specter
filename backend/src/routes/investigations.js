@@ -9,15 +9,11 @@ const investRouter = express.Router();
 
 // Configuration for processing timeouts
 const PROCESSING_CONFIG = {
-  WIRE_TIMEOUT: 120000,      // 120 seconds for Wire API (includes polling)
-  AI_TIMEOUT: 45000,          // 45 seconds for Gemini/AI analysis
-  THREAT_ANALYSIS_TIMEOUT: 10000, // 10 seconds for threat calculation
-  TOTAL_TIMEOUT: 180000       // 180 seconds total before giving up
+  WIRE_TIMEOUT: 120000,      
+  AI_TIMEOUT: 45000,          
+  THREAT_ANALYSIS_TIMEOUT: 10000, 
+  TOTAL_TIMEOUT: 180000       
 };
-
-// ============================================
-// START NEW INVESTIGATION
-// ============================================
 
 investRouter.post('/start', async (req, res) => {
   try {
@@ -28,7 +24,7 @@ investRouter.post('/start', async (req, res) => {
       return res.status(400).json({ error: 'Target type and value are required' });
     }
 
-    // Normalise URL before storing
+    
     if (targetType === 'url') {
       try {
         const { normalizeUrl } = await import('../services/wireService.js');
@@ -59,7 +55,7 @@ investRouter.post('/start', async (req, res) => {
       actionDetails: { targetType, targetValue }
     });
 
-    // Fire and forget with timeout wrapper
+    
     processInvestigationWithTimeout(
       investigation._id,
       userId,
@@ -80,9 +76,6 @@ investRouter.post('/start', async (req, res) => {
   }
 });
 
-// ============================================
-// GET INVESTIGATION STATUS / RESULT
-// ============================================
 
 investRouter.get('/:investigationId', async (req, res) => {
   try {
@@ -128,9 +121,6 @@ investRouter.get('/:investigationId', async (req, res) => {
   }
 });
 
-// ============================================
-// LIST INVESTIGATIONS
-// ============================================
 
 investRouter.get('/', async (req, res) => {
   try {
@@ -167,9 +157,6 @@ investRouter.get('/', async (req, res) => {
   }
 });
 
-// ============================================
-// BOOKMARK
-// ============================================
 
 investRouter.put('/:investigationId/bookmark', async (req, res) => {
   try {
@@ -186,9 +173,6 @@ investRouter.put('/:investigationId/bookmark', async (req, res) => {
   }
 });
 
-// ============================================
-// BACKGROUND PROCESSOR WITH TIMEOUT WRAPPER
-// ============================================
 
 async function processInvestigationWithTimeout(investigationId, userId, targetType, targetValue, maxTime) {
   const processingPromise = processInvestigation(investigationId, userId, targetType, targetValue);
@@ -202,9 +186,7 @@ async function processInvestigationWithTimeout(investigationId, userId, targetTy
   return Promise.race([processingPromise, timeoutPromise]);
 }
 
-// ============================================
-// MAIN INVESTIGATION PROCESSOR
-// ============================================
+
 
 async function processInvestigation(investigationId, userId, targetType, targetValue) {
   let investigation;
@@ -215,7 +197,7 @@ async function processInvestigation(investigationId, userId, targetType, targetV
     console.log(`[PROCESS] Starting investigation ${investigationId}`);
     console.log(`[PROCESS] Target: ${targetType} / ${targetValue}`);
 
-    // ── Step 1: Wire API (REQUIRED) ─────────────────
+    
     console.log(`[PROCESS] STEP 1/3: Calling Wire API (max ${PROCESSING_CONFIG.WIRE_TIMEOUT}ms)...`);
     const wireStartTime = Date.now();
 
@@ -259,7 +241,7 @@ async function processInvestigation(investigationId, userId, targetType, targetV
       return;
     }
 
-    // ── Step 2: AI / Rule-based Analysis (OPTIONAL) ─
+  
     console.log(`[PROCESS] STEP 2/3: Running AI analysis (max ${PROCESSING_CONFIG.AI_TIMEOUT}ms)...`);
     const aiStartTime = Date.now();
 
@@ -284,7 +266,7 @@ async function processInvestigation(investigationId, userId, targetType, targetV
       aiAnalysis = aiService._ruleBasedAnalysis(targetType, targetValue, wireData);
     }
 
-    // ── Step 3: Threat Score Calculation (OPTIONAL) ─
+  
     console.log(`[PROCESS] STEP 3/3: Calculating threat score (max ${PROCESSING_CONFIG.THREAT_ANALYSIS_TIMEOUT}ms)...`);
     const threatStartTime = Date.now();
 
@@ -317,7 +299,7 @@ async function processInvestigation(investigationId, userId, targetType, targetV
       };
     }
 
-    // ── Store Results ────────────────────────────────
+    
     console.log(`[PROCESS] Storing results...`);
     investigation.linkedIdentities     = aiAnalysis.linkedIdentities   || [];
     investigation.suspiciousPatterns   = aiAnalysis.suspiciousPatterns  || [];
@@ -403,9 +385,6 @@ async function processInvestigation(investigationId, userId, targetType, targetV
   }
 }
 
-// ============================================
-// REPORT GENERATION
-// ============================================
 
 async function generateThreatReport(investigation) {
   try {

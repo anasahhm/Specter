@@ -1,10 +1,8 @@
-// backend/src/models/index.js
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 
-// ============================================
+
 // USER MODEL
-// ============================================
 
 const userSchema = new mongoose.Schema({
   email: {
@@ -70,7 +68,6 @@ const userSchema = new mongoose.Schema({
   }
 }, { timestamps: true });
 
-// Hash password before saving
 userSchema.pre('save', async function(next) {
   if (!this.isModified('password')) return next();
   
@@ -83,14 +80,14 @@ userSchema.pre('save', async function(next) {
   }
 });
 
-// Method to compare passwords
+
 userSchema.methods.comparePassword = async function(candidatePassword) {
   return await bcrypt.compare(candidatePassword, this.password);
 };
 
-// ============================================
+
 // INVESTIGATION MODEL
-// ============================================
+
 
 const investigationSchema = new mongoose.Schema({
   userId: {
@@ -113,7 +110,7 @@ const investigationSchema = new mongoose.Schema({
     enum: ['pending', 'processing', 'completed', 'failed'],
     default: 'pending'
   },
-  // Human-readable failure reason (populated when status === 'failed')
+ 
   errorMessage: {
     type: String,
     default: null
@@ -203,7 +200,7 @@ anakinJobId: String,
   processingTime: Number // milliseconds
 }, { timestamps: true });
 
-// Index for faster queries
+
 investigationSchema.index({ userId: 1, createdAt: -1 });
 investigationSchema.index({ userId: 1, status: 1 });
 investigationSchema.index({ userId: 1, threatLevel: 1 });
@@ -212,10 +209,7 @@ investigationSchema.index({ targetValue: 1 });
 investigationSchema.index({ riskScore: -1 });
 investigationSchema.index({ createdAt: -1 });
 
-
-// ============================================
 // THREAT REPORT MODEL
-// ============================================
 
 const threatReportSchema = new mongoose.Schema({
   investigationId: {
@@ -253,7 +247,7 @@ const threatReportSchema = new mongoose.Schema({
     default: Date.now
   },
   exportedAt: Date,
-  exportFormats: [String], // ['pdf', 'json', 'html']
+  exportFormats: [String], 
   isPublished: {
     type: Boolean,
     default: false
@@ -269,9 +263,7 @@ const threatReportSchema = new mongoose.Schema({
   }
 }, { timestamps: true });
 
-// ============================================
 // ACTIVITY LOG MODEL
-// ============================================
 
 const activityLogSchema = new mongoose.Schema({
   userId: {
@@ -300,9 +292,7 @@ const activityLogSchema = new mongoose.Schema({
   }
 }, { timestamps: false });
 
-// ============================================
 // SAVED ENTITY MODEL
-// ============================================
 
 const savedEntitySchema = new mongoose.Schema({
   userId: {
@@ -343,12 +333,10 @@ const savedEntitySchema = new mongoose.Schema({
   }
 }, { timestamps: true });
 
-// Composite index for user entities
+
 savedEntitySchema.index({ userId: 1, entityValue: 1 }, { unique: true });
 
-// ============================================
 // CREATE MODELS
-// ============================================
 
 export const User = mongoose.model('User', userSchema);
 export const Investigation = mongoose.model('Investigation', investigationSchema);

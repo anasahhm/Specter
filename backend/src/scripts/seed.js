@@ -1,7 +1,3 @@
-// backend/src/scripts/seed.js
-// Creates a demo user only. No fake investigation data is seeded.
-// Investigations must be created through the real Wire API pipeline.
-
 import { User } from '../models/index.js';
 import mongoose from 'mongoose';
 import 'dotenv/config';
@@ -11,7 +7,7 @@ async function seedDatabase() {
     await mongoose.connect(process.env.MONGODB_URI);
     console.log('Connected to MongoDB');
 
-    // Check if demo user already exists
+  
     const existing = await User.findOne({ email: 'demo@specter.ai' });
     if (existing) {
       console.log('Demo user already exists:', existing.email);

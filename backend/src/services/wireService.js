@@ -1,9 +1,5 @@
 import axios from 'axios';
 
-// ─────────────────────────────────────────────
-// URL NORMALIZER
-// google.com  →  https://google.com
-// ─────────────────────────────────────────────
 export function normalizeUrl(rawUrl) {
   if (!rawUrl || typeof rawUrl !== 'string') throw new Error('URL is required');
   const trimmed = rawUrl.trim();
@@ -11,9 +7,7 @@ export function normalizeUrl(rawUrl) {
   return `https://${trimmed}`;
 }
 
-// ─────────────────────────────────────────────
 // WIRE SERVICE  (powered by Anakin.io)
-// ─────────────────────────────────────────────
 class WireService {
   constructor() {
     this.apiKey  = process.env.WIRE_API_KEY || null;
@@ -27,7 +21,7 @@ class WireService {
     }
   }
 
-  // ── Main public entry point ───────────────
+
   async scrapeUrl(rawUrl) {
     const url = normalizeUrl(rawUrl);
     console.log(`[WIRE] Scraping URL: ${url}`);
@@ -39,7 +33,7 @@ class WireService {
       );
     }
 
-    // ── Step 1: Submit scrape job ─────────────
+
     let jobId;
     try {
       console.log(`[WIRE] Submitting job to ${this.baseUrl}/url-scraper`);
@@ -50,7 +44,7 @@ class WireService {
           url,
           country:      'us',
           useBrowser:   false,
-          generateJson: true   // Request AI-extracted structured JSON from Anakin
+          generateJson: true   
         },
         {
           headers: {
@@ -61,7 +55,7 @@ class WireService {
         }
       );
 
-      // Anakin returns: { jobId: "job_abc123", status: "pending" }
+      
       jobId = submitRes.data?.jobId || submitRes.data?.id;
 
       if (!jobId) {
@@ -84,7 +78,7 @@ class WireService {
       );
     }
 
-    // ── Step 2: Poll until completed ─────────
+  
     const result = await this.pollJob(jobId);
 
     console.log(`[WIRE] ✓ Scrape completed for: ${url}`);
@@ -102,9 +96,7 @@ class WireService {
     };
   }
 
-  // ── Polling loop ──────────────────────────
-  // Anakin GET /v1/url-scraper/{id}
-  // Response statuses: pending | processing | completed | failed
+
   async pollJob(jobId, maxAttempts = 30, intervalMs = 3000) {
     console.log(`[WIRE] Polling job ${jobId} (max ${maxAttempts} × ${intervalMs}ms = ${(maxAttempts * intervalMs) / 1000}s timeout)`);
 
@@ -148,7 +140,7 @@ class WireService {
         );
       }
 
-      // status === 'pending' | 'processing' — keep waiting
+    
     }
 
     throw new WireError(
@@ -157,7 +149,7 @@ class WireService {
     );
   }
 
-  // ── Entry point called by investigations route ──
+  
   async gatherData(targetType, targetValue) {
     if (targetType !== 'url') {
       throw new WireError(
@@ -176,7 +168,7 @@ class WireService {
 
     return {
       targetType:    'url',
-      targetValue:   result.url,          // normalised URL
+      targetValue:   result.url,          
       metadata:      result.generatedJson || {},
       websiteInfo:   enriched,
       markdown:      result.markdown,
@@ -190,7 +182,7 @@ class WireService {
     };
   }
 
-  // ── Enrich generatedJson with derived threat fields ──
+
   enrichWebsiteInfo(jsonData) {
   const links = jsonData.links || [];
 
@@ -220,7 +212,7 @@ class WireService {
 }
 }
 
-// ── Custom error class ──────────────────────
+
 export class WireError extends Error {
   constructor(message, code, httpStatus) {
     super(message);

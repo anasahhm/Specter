@@ -23,27 +23,21 @@ class ThreatAnalysisService {
       behavioralRisk: 0
     };
 
-    // ── 1. Domain risk (0-30) ──────────────────
     breakdown.domainRisk = this.domainRisk(targetValue, wireJson, aiAnalysis);
     score += breakdown.domainRisk;
 
-    // ── 2. Form risk (0-30) ────────────────────
     // Only score if Wire returned actual form data
     breakdown.formRisk = this.formRisk(wireJson);
     score += breakdown.formRisk;
 
-    // ── 3. SSL risk (0-15) ────────────────────
-    // Only apply SSL deduction when Wire explicitly says ssl: false
-    // When ssl is undefined/null, do not penalise
     breakdown.sslRisk = this.sslRisk(targetValue, wireJson);
     score += breakdown.sslRisk;
 
-    // ── 4. Content risk (0-15) ────────────────
-    // Uses actual Wire markdown
+
     breakdown.contentRisk = this.contentRisk(markdown);
     score += breakdown.contentRisk;
 
-    // ── 5. Behavioural risk (0-10) ────────────
+    
     breakdown.behavioralRisk = this.behavioralRisk(targetValue, wireJson, aiAnalysis);
     score += breakdown.behavioralRisk;
 
@@ -76,7 +70,7 @@ class ThreatAnalysisService {
     };
   }
 
-  // ── Individual risk calculators ──────────────
+  
 
   domainRisk(url, wireJson, aiAnalysis) {
     let risk = 0;
@@ -97,27 +91,27 @@ if (domain.includes('update'))
 if (domain.includes('login'))
   risk += 2;
 
-    // Suspicious TLD — derived from the actual URL, not invented
+    
     const suspiciousTLDs = ['.tk', '.ml', '.ga', '.cf', '.xyz', '.ru', '.cn', '.top', '.pw', '.cc'];
     if (suspiciousTLDs.some(t => domain.endsWith(t))) risk += 12;
 
-    // Domain age — from Wire only; skip if unavailable
+    
     if (wireJson.domainAge != null) {
       if (wireJson.domainAge < 30)  risk += 10;
       else if (wireJson.domainAge < 90) risk += 5;
     }
 
-    // Brand impersonation — from AI analysis of Wire content
+    
     if (aiAnalysis?.suspiciousPatterns?.some(p =>
       p.toLowerCase().includes('impersonation') || p.toLowerCase().includes('phishing')
     )) {
       risk += 15;
     }
 
-    // Very long domain (typosquatting indicator)
+    
     if (domain.length > 40) risk += 5;
 
-    // Unknown/new domain that isn't a well-known legitimate site
+    
     if (
   !this.isKnownLegitDomain(domain) &&
   !domain.endsWith('.gov') &&
@@ -148,9 +142,9 @@ if (domain.includes('login'))
 
   sslRisk(url, wireJson) {
     let risk = 0;
-    // Wire explicitly reports no SSL
+    
     if (wireJson.ssl === false) risk += 15;
-    // URL itself uses http: (confirms no TLS in transit)
+    
     if (url.startsWith('http://')) risk += 10;
     return Math.min(15, risk);
   }
@@ -186,11 +180,11 @@ if (domain.includes('login'))
     if (Array.isArray(wireJson.redirects) && wireJson.redirects.length > 2) risk += 5;
     if (Array.isArray(wireJson.externalLinks) && wireJson.externalLinks.length > 10) risk += 3;
 
-    // IP address used as domain
+
     const domain = this.extractDomain(url);
     if (/^\d{1,3}(\.\d{1,3}){3}$/.test(domain)) risk += 5;
 
-    // Extra dashes (typosquatting)
+
     if ((domain.match(/-/g) || []).length > 2) risk += 2;
 
     if ((aiAnalysis?.behavioralInsights || []).length > 0) {
@@ -209,7 +203,7 @@ if (domain.includes('login'))
     return Math.min(100, Math.max(0, p));
   }
 
-  // Confidence is higher when Wire returned richer data
+
   confidence(wireJson, score) {
     let base = 50;
     if (wireJson.ssl       != null) base += 10;
