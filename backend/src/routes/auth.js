@@ -48,7 +48,7 @@ router.post('/register', async (req, res) => {
 
     await ActivityLog.create({
       userId: user._id,
-      action: 'register',
+      action: 'login',
       ipAddress: req.ip
     });
 
