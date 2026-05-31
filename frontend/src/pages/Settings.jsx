@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { ArrowLeft, Save } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
- 
+
 export default function Settings() {
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -14,18 +14,18 @@ export default function Settings() {
     displayName: user?.displayName || ''
   });
   const [saved, setSaved] = useState(false);
- 
+
   const handleChange = (key, value) => {
     setSettings(prev => ({ ...prev, [key]: value }));
     setSaved(false);
   };
- 
+
   const handleSave = async () => {
-    // API call to save settings
+    
     setSaved(true);
     setTimeout(() => setSaved(false), 3000);
   };
- 
+
   return (
     <div className="min-h-screen bg-spec-bg">
       <motion.div
@@ -45,14 +45,14 @@ export default function Settings() {
           <h1 className="text-3xl font-bold text-white font-space">Settings</h1>
         </div>
       </motion.div>
- 
+
       <div className="max-w-2xl mx-auto px-8 py-12">
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           className="space-y-8"
         >
-          {/* Profile Section */}
+          
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -77,8 +77,8 @@ export default function Settings() {
               </div>
             </div>
           </motion.div>
- 
-          {/* Preferences Section */}
+
+          
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -116,8 +116,8 @@ export default function Settings() {
               ))}
             </div>
           </motion.div>
- 
-          {/* Save Button */}
+
+          
           <motion.div className="flex items-center justify-between">
             <motion.button
               whileHover={{ scale: 1.05 }}

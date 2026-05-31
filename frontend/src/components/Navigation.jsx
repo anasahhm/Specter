@@ -21,7 +21,7 @@ export default function Navigation() {
       className="sticky top-0 z-50 border-b border-spec-border/30 bg-spec-bg/80 backdrop-blur-sm"
     >
       <div className="max-w-7xl mx-auto px-8 py-4 flex items-center justify-between">
-        {/* Logo with gradient border */}
+      
         <motion.button
           onClick={() => navigate('/dashboard')}
           className="flex items-center space-x-3 hover:opacity-80 transition-opacity"
@@ -34,7 +34,7 @@ export default function Navigation() {
           <h1 className="text-lg font-bold text-white font-sans tracking-wider">SPECTER</h1>
         </motion.button>
 
-        {/* Nav Items */}
+        
         <div className="flex items-center space-x-8">
           {navItems.map(item => (
             <motion.button
@@ -59,7 +59,7 @@ export default function Navigation() {
           ))}
         </div>
 
-        {/* User Menu */}
+        
         <motion.div className="flex items-center space-x-4">
           <div className="text-right">
             <p className="text-sm font-semibold text-white">{user?.displayName || 'User'}</p>

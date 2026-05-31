@@ -62,7 +62,7 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-spec-bg">
-      {/* Header */}
+      
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -87,7 +87,7 @@ export default function Dashboard() {
             </motion.button>
           </div>
 
-          {/* Quick Search */}
+          
           <div className="relative">
             <Search className="absolute left-4 top-3 w-5 h-5 text-spec-accent/50" />
             <input
@@ -99,7 +99,7 @@ export default function Dashboard() {
         </div>
       </motion.div>
 
-      {/* Main Content */}
+      
       <div className="max-w-7xl mx-auto px-8 py-8">
         <motion.div
           variants={containerVariants}
@@ -107,7 +107,7 @@ export default function Dashboard() {
           animate="visible"
           className="space-y-8"
         >
-          {/* Stats Grid */}
+          
           <motion.div variants={itemVariants} className="grid md:grid-cols-4 gap-4">
             {[
               {
@@ -154,20 +154,20 @@ export default function Dashboard() {
             ))}
           </motion.div>
 
-          {/* Main Grid */}
+          
           <motion.div variants={itemVariants} className="grid lg:grid-cols-3 gap-8">
             {/* Recent Investigations */}
             <div className="lg:col-span-2">
               <RecentInvestigations investigations={investigations} loading={loading} />
             </div>
 
-            {/* Threat Timeline */}
+            
             <div>
               <ActivityTimeline />
             </div>
           </motion.div>
 
-          {/* Investigation Form Modal */}
+          
           {showForm && (
             <motion.div
               initial={{ opacity: 0 }}

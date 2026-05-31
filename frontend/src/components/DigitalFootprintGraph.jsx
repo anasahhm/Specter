@@ -1,6 +1,6 @@
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import { motion } from 'framer-motion';
- 
+
 export function DigitalFootprintGraph({ linkedIdentities = [] }) {
   const platformCounts = linkedIdentities.reduce((acc, id) => {
     const existing = acc.find(p => p.name === id.platform);
@@ -11,9 +11,9 @@ export function DigitalFootprintGraph({ linkedIdentities = [] }) {
     }
     return acc;
   }, []);
- 
+
   const COLORS = ['#00ff88', '#00aaff', '#ffaa00', '#ff0055', '#aa00ff'];
- 
+
   return (
     <motion.div className="p-6 rounded-xl border border-spec-border/50 bg-spec-surface/30 backdrop-blur-sm">
       <h3 className="text-lg font-bold text-white mb-4 font-space">Digital Footprint</h3>
@@ -38,7 +38,7 @@ export function DigitalFootprintGraph({ linkedIdentities = [] }) {
               </Pie>
             </PieChart>
           </ResponsiveContainer>
- 
+
           <div className="space-y-2">
             {linkedIdentities.slice(0, 5).map((id, i) => (
               <motion.div

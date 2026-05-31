@@ -27,7 +27,7 @@ export function ThreatScoreCard({ riskScore = 0, threatLevel = 'low', scamProbab
       <div className="absolute inset-0 bg-gradient-to-r from-transparent via-spec-accent/5 to-transparent pointer-events-none" />
 
       <div className="relative z-10 grid lg:grid-cols-4 gap-8">
-        {/* Overall Risk */}
+        
         <div className="flex flex-col items-center">
           <p className="text-gray-400 text-sm mb-2 font-serif uppercase tracking-wider">Overall Risk</p>
           <motion.div
@@ -53,7 +53,7 @@ export function ThreatScoreCard({ riskScore = 0, threatLevel = 'low', scamProbab
           <p className={`mt-2 text-sm font-bold ${colors.text} uppercase font-mono tracking-wider`}>{safeThreatLevel}</p>
         </div>
 
-        {/* Metrics Grid */}
+
         {[
           {
             label: 'Scam Probability',

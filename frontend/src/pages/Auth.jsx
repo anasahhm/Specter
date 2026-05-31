@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { apiClient } from '../api/client';
 import { Eye, EyeOff, Lock, Mail } from 'lucide-react';
- 
+
 export default function Auth() {
   const [isLogin, setIsLogin] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -15,25 +15,25 @@ export default function Auth() {
     password: '',
     displayName: ''
   });
- 
+
   const { login } = useAuth();
   const navigate = useNavigate();
- 
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
     setError('');
   };
- 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
- 
+
     try {
       const endpoint = isLogin ? '/auth/login' : '/auth/register';
       const response = await apiClient.post(endpoint, formData);
- 
+
       if (response.data.success) {
         login(response.data.token, response.data.user);
         navigate('/dashboard');
@@ -44,7 +44,7 @@ export default function Auth() {
       setLoading(false);
     }
   };
- 
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -55,7 +55,7 @@ export default function Auth() {
       }
     }
   };
- 
+
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: { 
@@ -64,20 +64,20 @@ export default function Auth() {
       transition: { duration: 0.6 }
     }
   };
- 
+
   return (
     <div className="min-h-screen bg-spec-bg flex items-center justify-center px-4">
-      {/* Background decorations */}
+      
       <div className="absolute top-0 right-0 w-96 h-96 bg-spec-accent/5 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-spec-info/5 rounded-full blur-3xl pointer-events-none" />
- 
+
       <motion.div
         variants={containerVariants}
         initial="hidden"
         animate="visible"
         className="relative z-10 w-full max-w-md"
       >
-        {/* Header */}
+      
         <motion.div variants={itemVariants} className="text-center mb-8">
           <div className="inline-block px-4 py-2 rounded-full border border-spec-accent/30 bg-spec-accent/5 text-spec-accent text-sm font-space mb-4">
             SPECTER AUTHENTICATION
@@ -91,14 +91,14 @@ export default function Auth() {
               : 'Create an account to start investigating'}
           </p>
         </motion.div>
- 
-        {/* Form */}
+
+        
         <motion.div
           variants={itemVariants}
           className="p-6 rounded-xl border border-spec-border/50 bg-spec-surface/30 backdrop-blur-sm"
         >
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Display Name (Register only) */}
+            
             {!isLogin && (
               <motion.div variants={itemVariants}>
                 <label className="block text-sm font-semibold text-white mb-2">Display Name</label>
@@ -112,8 +112,8 @@ export default function Auth() {
                 />
               </motion.div>
             )}
- 
-            {/* Email */}
+
+            
             <motion.div variants={itemVariants}>
               <label className="block text-sm font-semibold text-white mb-2">Email</label>
               <div className="relative">
@@ -129,8 +129,8 @@ export default function Auth() {
                 />
               </div>
             </motion.div>
- 
-            {/* Password */}
+
+            
             <motion.div variants={itemVariants}>
               <label className="block text-sm font-semibold text-white mb-2">Password</label>
               <div className="relative">
@@ -154,8 +154,8 @@ export default function Auth() {
                 </button>
               </div>
             </motion.div>
- 
-            {/* Error */}
+
+            
             {error && (
               <motion.div
                 variants={itemVariants}
@@ -164,8 +164,8 @@ export default function Auth() {
                 <p className="text-red-400 text-sm">{error}</p>
               </motion.div>
             )}
- 
-            {/* Submit Button */}
+
+            
             <motion.button
               variants={itemVariants}
               whileHover={{ scale: 1.02 }}
@@ -177,8 +177,7 @@ export default function Auth() {
               {loading ? 'Authenticating...' : isLogin ? 'Sign In' : 'Create Account'}
             </motion.button>
           </form>
- 
-          {/* Toggle */}
+
           <motion.div variants={itemVariants} className="mt-6 text-center">
             <p className="text-gray-400 text-sm">
               {isLogin ? "Don't have an account?" : 'Already have an account?'}{' '}
@@ -195,8 +194,8 @@ export default function Auth() {
             </p>
           </motion.div>
         </motion.div>
- 
-        {/* Demo Credentials */}
+
+        
         <motion.div variants={itemVariants} className="mt-6 p-4 rounded-lg border border-spec-border/30 bg-spec-surface/20">
           <p className="text-xs text-gray-500 mb-2">Demo Credentials:</p>
           <p className="text-xs text-gray-400">Email: <span className="text-spec-accent">test@test.com</span></p>

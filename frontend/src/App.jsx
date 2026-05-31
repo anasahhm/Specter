@@ -11,7 +11,7 @@ import './styles/globals.css';
 import './styles/animations.css';
 import Settings from './pages/Settings';
 import NotFound from './pages/NotFound';
- 
+
 function ProtectedRoute({ children }) {
   const { isAuthenticated, loading } = useAuth();
   
@@ -21,7 +21,7 @@ function ProtectedRoute({ children }) {
   
   return isAuthenticated ? children : <Navigate to="/auth" />;
 }
- 
+
 function AppRoutes() {
   const { isAuthenticated } = useAuth();
   

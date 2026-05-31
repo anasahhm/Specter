@@ -1,6 +1,6 @@
 import { RadarChart, Radar, PolarGrid, PolarAngleAxis, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 import { motion } from 'framer-motion';
- 
+
 export default function ThreatVisualization({ investigation }) {
   const radarData = [
     { metric: 'Phishing', value: investigation.phishingDetected ? 100 : 20 },
@@ -9,7 +9,7 @@ export default function ThreatVisualization({ investigation }) {
     { metric: 'Toxicity', value: investigation.toxicityScore },
     { metric: 'Risk', value: investigation.riskScore }
   ];
- 
+
   return (
     <motion.div className="p-6 rounded-xl border border-spec-border/50 bg-spec-surface/30 backdrop-blur-sm space-y-6">
       <div>
@@ -22,7 +22,7 @@ export default function ThreatVisualization({ investigation }) {
           </RadarChart>
         </ResponsiveContainer>
       </div>
- 
+
       <div>
         <h4 className="text-sm font-bold text-white mb-4 uppercase">Behavioral Patterns</h4>
         {investigation.behavioralInsights && investigation.behavioralInsights.length > 0 ? (

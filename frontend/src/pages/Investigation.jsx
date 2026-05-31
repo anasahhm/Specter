@@ -49,7 +49,7 @@ export default function InvestigationPage() {
     );
   }
 
-  // Wire API failure — show clear error, no fake report
+  
   if (investigation.status === 'failed') {
     return (
       <div className="min-h-screen bg-spec-bg flex items-center justify-center">
@@ -114,7 +114,7 @@ export default function InvestigationPage() {
     }
   };
 
-  // Ensure data has defaults
+  
   const threatLevel = investigation.threatLevel || 'low';
   const riskScore = investigation.riskScore ?? 0;
   const scamProbability = investigation.scamProbability ?? 0;
@@ -129,7 +129,7 @@ export default function InvestigationPage() {
 
   return (
     <div className="min-h-screen bg-spec-bg">
-      {/* Header */}
+      
       <motion.div 
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -187,7 +187,7 @@ export default function InvestigationPage() {
         </div>
       </motion.div>
 
-      {/* Content */}
+      
       <div className="max-w-7xl mx-auto px-8 py-8">
         <motion.div
           variants={containerVariants}
@@ -195,7 +195,7 @@ export default function InvestigationPage() {
           animate="visible"
           className="space-y-8"
         >
-          {/* Risk Score Section - Now with all metrics */}
+          
           <motion.div variants={itemVariants}>
             <ThreatScoreCard
               riskScore={riskScore}
@@ -205,9 +205,9 @@ export default function InvestigationPage() {
             />
           </motion.div>
 
-          {/* Main Investigation Grid */}
+          
           <motion.div variants={itemVariants} className="grid lg:grid-cols-3 gap-8">
-            {/* Threat Visualization */}
+            
             <div className="lg:col-span-2">
               <ThreatVisualization 
                 investigation={{
@@ -221,7 +221,7 @@ export default function InvestigationPage() {
               />
             </div>
 
-            {/* Detection Results */}
+            
             <motion.div className="p-6 rounded-xl border border-spec-border/50 bg-spec-surface/30 backdrop-blur-sm h-fit">
               <h3 className="text-lg font-bold text-white mb-4 font-space">DETECTED THREATS</h3>
               <div className="space-y-3">
@@ -255,14 +255,14 @@ export default function InvestigationPage() {
             </motion.div>
           </motion.div>
 
-          {/* Linked Identities & Patterns */}
+        
           <motion.div variants={itemVariants} className="grid lg:grid-cols-2 gap-8">
-            {/* Digital Footprint / Linked Identities */}
+          
             <div>
               <DigitalFootprintGraph linkedIdentities={linkedIdentities} />
             </div>
 
-            {/* AI Summary & Recommendations */}
+            
             <motion.div className="p-6 rounded-xl border border-spec-border/50 bg-spec-surface/30 backdrop-blur-sm">
               <h3 className="text-lg font-bold text-white mb-4 font-space">AI ANALYSIS</h3>
               <p className="text-gray-300 mb-6 leading-relaxed">{aiSummary}</p>
@@ -280,7 +280,7 @@ export default function InvestigationPage() {
             </motion.div>
           </motion.div>
 
-          {/* Behavioral Insights */}
+          
           {behavioralInsights.length > 0 && (
             <motion.div variants={itemVariants} className="p-6 rounded-xl border border-spec-border/50 bg-spec-surface/30 backdrop-blur-sm">
               <h3 className="text-lg font-bold text-white mb-4 font-space">BEHAVIORAL INSIGHTS</h3>
@@ -295,7 +295,7 @@ export default function InvestigationPage() {
             </motion.div>
           )}
 
-          {/* Technical Details */}
+          
           {investigation.urlIntelligence && investigation.urlIntelligence.extractedLinks?.length > 0 && (
             <motion.div variants={itemVariants} className="p-6 rounded-xl border border-spec-border/50 bg-spec-surface/30 backdrop-blur-sm">
               <h3 className="text-lg font-bold text-white mb-4 font-space">EXTRACTED LINKS</h3>

@@ -1,14 +1,5 @@
-/**
- * HUDRings
- * Rotating concentric HUD rings, radial scan sweeps, and targeting
- * reticles around the central Eye visual.
- * 
- * Rendered as inline SVG – GPU-accelerated via CSS animations.
- * Pointer-events: none – purely decorative.
- */
 import React, { memo } from 'react';
 
-// Individual ring configs: radius, stroke, duration, direction, dash
 const RINGS = [
   { r: 148, stroke: 'rgba(255,42,42,0.35)',   strokeW: 1,   dur: 18,  rev: false, dash: '4 8' },
   { r: 162, stroke: 'rgba(0,170,255,0.18)',   strokeW: 0.5, dur: 30,  rev: true,  dash: '2 12' },
@@ -18,7 +9,7 @@ const RINGS = [
   { r: 228, stroke: 'rgba(255,42,42,0.08)',   strokeW: 0.5, dur: 90,  rev: true,  dash: '2 30' },
 ];
 
-// Tick marks on a ring
+
 const Ticks = memo(({ r, count, color }) => {
   const ticks = Array.from({ length: count }, (_, i) => {
     const angle = (i / count) * 2 * Math.PI;
@@ -46,7 +37,7 @@ const Ticks = memo(({ r, count, color }) => {
   );
 });
 
-// Conic sweep (radar arm)
+
 const SweepArm = memo(({ r, color, dur, delay = 0 }) => (
   <g style={{ animation: `hudSpin ${dur}s linear ${delay}s infinite`, transformOrigin: 'center' }}>
     <defs>
@@ -88,7 +79,7 @@ export default memo(function HUDRings({ size = 480 }) {
       >
         <g transform={`translate(${cx}, ${cx})`}>
 
-          {/* Concentric rings */}
+          
           {RINGS.map((ring, i) => (
             <g
               key={i}
@@ -110,7 +101,7 @@ export default memo(function HUDRings({ size = 480 }) {
             </g>
           ))}
 
-          {/* Radar sweep arms */}
+          
           <SweepArm r={190} color="#ff2a2a" dur={8} />
           <SweepArm r={150} color="#00aaff" dur={14} delay={3} />
 

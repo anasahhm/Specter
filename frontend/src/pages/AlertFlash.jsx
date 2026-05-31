@@ -1,9 +1,3 @@
-/**
- * AlertFlash
- * Rare, subtle security-alert pulses at random intervals (8–15s).
- * Never distracts – very low opacity, brief duration.
- * Pointer-events: none.
- */
 import React, { useState, useEffect, useCallback, useRef, memo } from 'react';
 
 const ALERTS = [
@@ -14,11 +8,11 @@ const ALERTS = [
 ];
 
 function randomInterval() {
-  return 8000 + Math.random() * 7000; // 8–15s
+  return 8000 + Math.random() * 7000; 
 }
 
 export default memo(function AlertFlash() {
-  const [flash, setFlash] = useState(null); // { label, color }
+  const [flash, setFlash] = useState(null); 
   const [visible, setVisible] = useState(false);
   const timerRef = useRef(null);
 
@@ -27,10 +21,10 @@ export default memo(function AlertFlash() {
     setFlash(alert);
     setVisible(true);
 
-    // Fade out after 900ms
+    
     setTimeout(() => setVisible(false), 900);
 
-    // Schedule next
+    
     timerRef.current = setTimeout(triggerFlash, randomInterval());
   }, []);
 
@@ -55,7 +49,7 @@ export default memo(function AlertFlash() {
         overflow: 'hidden',
       }}
     >
-      {/* Edge pulse ring */}
+      
       <div
         style={{
           position: 'absolute',
@@ -69,7 +63,7 @@ export default memo(function AlertFlash() {
         }}
       />
 
-      {/* Center sweep line */}
+      
       <div
         style={{
           position: 'absolute',
@@ -85,7 +79,7 @@ export default memo(function AlertFlash() {
         }}
       />
 
-      {/* Label badge */}
+      
       <div
         style={{
           position: 'absolute',

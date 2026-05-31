@@ -1,10 +1,10 @@
 import { useState, useCallback } from 'react';
 import apiClient from '../api/client';
- 
+
 export function useApi() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
- 
+
   const request = useCallback(async (method, endpoint, data = null) => {
     setLoading(true);
     setError(null);
@@ -23,6 +23,6 @@ export function useApi() {
       setLoading(false);
     }
   }, []);
- 
+
   return { request, loading, error };
 }

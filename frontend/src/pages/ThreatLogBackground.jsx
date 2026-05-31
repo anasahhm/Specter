@@ -1,9 +1,3 @@
-/**
- * ThreatLogBackground
- * Floating cyber-intelligence log lines at 8-12% opacity.
- * Purely decorative – pointer-events: none, no interaction.
- * GPU-accelerated via CSS will-change + transform3d.
- */
 import React, { useMemo, useEffect, useRef } from 'react';
 
 const LOG_ENTRIES = [
@@ -33,7 +27,7 @@ const LOG_ENTRIES = [
   '[ML] Typosquat distance: 1',
 ];
 
-// Deterministic seeded random to avoid hydration mismatches
+
 function seededRand(seed) {
   const x = Math.sin(seed + 1) * 10000;
   return x - Math.floor(x);
@@ -45,11 +39,11 @@ export default function ThreatLogBackground() {
   // Generate stable lane configs once
   const lanes = useMemo(() => {
     return Array.from({ length: 14 }, (_, i) => {
-      const topPct   = 4 + seededRand(i * 3)     * 92;   // 4% – 96%
-      const duration = 22 + seededRand(i * 7)    * 28;   // 22s – 50s
-      const delay    = -seededRand(i * 13)       * 40;   // staggered start
-      const opacity  = 0.07 + seededRand(i * 17) * 0.05; // 0.07 – 0.12
-      const fontSize = 10 + seededRand(i * 5)   * 2;    // 10px – 12px
+      const topPct   = 4 + seededRand(i * 3)     * 92;   
+      const duration = 22 + seededRand(i * 7)    * 28;   
+      const delay    = -seededRand(i * 13)       * 40;   
+      const opacity  = 0.07 + seededRand(i * 17) * 0.05; 
+      const fontSize = 10 + seededRand(i * 5)   * 2;    
       // Pick 3-4 entries per lane, cycling
       const entryCount = 3 + Math.floor(seededRand(i * 11) * 2);
       const entries = Array.from({ length: entryCount }, (_, j) =>
@@ -92,7 +86,7 @@ export default function ThreatLogBackground() {
             color: i % 3 === 0 ? '#ff2a2a' : i % 3 === 1 ? '#00aaff' : '#a0b4c8',
           }}
         >
-          {/* Duplicate for seamless loop */}
+          
           {[...lane.entries, ...lane.entries, ...lane.entries].map((entry, j) => (
             <span key={j}>{entry}</span>
           ))}

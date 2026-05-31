@@ -14,7 +14,7 @@ export default function ThreatReport() {
   useEffect(() => {
     const load = async () => {
       try {
-        // Load investigation (which contains all Wire API data)
+      
         const res = await apiClient.get(`/investigations/${id}`);
         setReport(res.data.investigation);
       } catch (err) {
@@ -57,7 +57,7 @@ export default function ThreatReport() {
     );
   }
 
-  // If the investigation itself failed, show the failure state
+
   if (report.status === 'failed') {
     return (
       <div className="min-h-screen bg-spec-bg flex items-center justify-center">
@@ -108,7 +108,7 @@ export default function ThreatReport() {
 
   return (
     <div className="min-h-screen bg-spec-bg">
-      {/* Header */}
+      
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -137,11 +137,11 @@ export default function ThreatReport() {
         </div>
       </motion.div>
 
-      {/* Content */}
+      
       <div className="max-w-4xl mx-auto px-8 py-12">
         <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-8">
 
-          {/* Executive Summary */}
+          
           <motion.section variants={itemVariants} className="p-8 rounded-xl border border-spec-border/50 bg-spec-surface/30 backdrop-blur-sm">
             <h2 className="text-2xl font-bold text-white mb-4 font-space">EXECUTIVE SUMMARY</h2>
             <p className="text-gray-300 leading-relaxed mb-6">
@@ -162,7 +162,7 @@ export default function ThreatReport() {
             </div>
           </motion.section>
 
-          {/* Wire API Intelligence */}
+          
           <motion.section variants={itemVariants} className="p-8 rounded-xl border border-spec-border/50 bg-spec-surface/30 backdrop-blur-sm">
             <h2 className="text-2xl font-bold text-white mb-4 font-space">WIRE API INTELLIGENCE</h2>
             <div className="grid grid-cols-2 gap-4 text-sm">
@@ -184,7 +184,7 @@ export default function ThreatReport() {
             </div>
           </motion.section>
 
-          {/* Key Findings */}
+          
           {findings.length > 0 && (
             <motion.section variants={itemVariants} className="p-8 rounded-xl border border-spec-border/50 bg-spec-surface/30 backdrop-blur-sm">
               <h2 className="text-2xl font-bold text-white mb-6 font-space">KEY FINDINGS</h2>
@@ -208,7 +208,7 @@ export default function ThreatReport() {
             </motion.section>
           )}
 
-          {/* Behavioral Insights */}
+          
           {insights.length > 0 && (
             <motion.section variants={itemVariants} className="p-8 rounded-xl border border-spec-border/50 bg-spec-surface/30 backdrop-blur-sm">
               <h2 className="text-2xl font-bold text-white mb-4 font-space">BEHAVIORAL INSIGHTS</h2>
@@ -223,7 +223,7 @@ export default function ThreatReport() {
             </motion.section>
           )}
 
-          {/* Recommendations */}
+          
           {recs.length > 0 && (
             <motion.section variants={itemVariants} className="p-8 rounded-xl border border-spec-accent/30 bg-spec-accent/5 backdrop-blur-sm">
               <h2 className="text-2xl font-bold text-white mb-6 font-space">RECOMMENDATIONS</h2>
@@ -239,7 +239,7 @@ export default function ThreatReport() {
             </motion.section>
           )}
 
-          {/* Linked Identities */}
+          
           {identities.length > 0 && (
             <motion.section variants={itemVariants} className="p-8 rounded-xl border border-spec-border/50 bg-spec-surface/30 backdrop-blur-sm">
               <h2 className="text-2xl font-bold text-white mb-4 font-space">LINKED IDENTITIES</h2>
@@ -257,7 +257,7 @@ export default function ThreatReport() {
             </motion.section>
           )}
 
-          {/* Report Details */}
+          
           <motion.section variants={itemVariants} className="p-8 rounded-xl border border-spec-border/50 bg-spec-surface/30 backdrop-blur-sm">
             <h2 className="text-2xl font-bold text-white mb-6 font-space">REPORT DETAILS</h2>
             <div className="grid grid-cols-2 gap-4">

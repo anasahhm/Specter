@@ -1,12 +1,7 @@
-/**
- * AnalysisPanels
- * Left  – LiveTerminal: self-generating cryptic code/intel scrolling upward
- * Right – DNS Intelligence panel (unchanged)
- */
 import React, { useState, useEffect, useRef, useCallback, memo } from 'react';
 import { motion } from 'framer-motion';
 
-// ─── Shared panel styles ─────────────────────────────────────────
+
 const panelBase = {
   position: 'absolute',
   zIndex: 8,
@@ -52,8 +47,6 @@ const divider = {
   margin: '0.55rem 0',
 };
 
-// ─── Terminal line pool ──────────────────────────────────────────
-// Mix of: hex addresses, function calls, status lines, data blobs
 const LINE_POOL = [
   { text: '> init_scan_engine v4.2.1',             color: '#00aaff' },
   { text: 'LOAD  /proc/net/tcp6  → 0x4f2a',        color: '#a0c4ff' },
@@ -89,7 +82,7 @@ const LINE_POOL = [
   { text: 'MX    record anomaly — spoofed domain',  color: '#ff9500' },
 ];
 
-// Shuffle helper (Fisher-Yates, seeded-ish)
+
 function shuffled(arr) {
   const a = [...arr];
   for (let i = a.length - 1; i > 0; i--) {
@@ -99,22 +92,22 @@ function shuffled(arr) {
   return a;
 }
 
-// ─── LiveTerminal component ──────────────────────────────────────
-const VISIBLE_LINES = 18;   // lines shown at once
-const INTERVAL_MS   = 520;  // new line every N ms
+
+const VISIBLE_LINES = 18;   
+const INTERVAL_MS   = 520;  
 
 const LiveTerminal = memo(() => {
   const [lines, setLines]     = useState(() => shuffled(LINE_POOL).slice(0, VISIBLE_LINES));
-  const [typing, setTyping]   = useState('');   // currently-being-typed line text
+  const [typing, setTyping]   = useState('');   
   const [typingColor, setTypingColor] = useState('#00aaff');
   const poolRef               = useRef(shuffled(LINE_POOL));
   const idxRef                = useRef(0);
   const charIdxRef            = useRef(0);
-  const pendingRef            = useRef(null);   // { text, color }
+  const pendingRef            = useRef(null);   
   const typingTimer           = useRef(null);
   const lineTimer             = useRef(null);
 
-  // Pick next line from pool (re-shuffle when exhausted)
+
   const nextEntry = useCallback(() => {
     if (idxRef.current >= poolRef.current.length) {
       poolRef.current = shuffled(LINE_POOL);
@@ -123,7 +116,7 @@ const LiveTerminal = memo(() => {
     return poolRef.current[idxRef.current++];
   }, []);
 
-  // Type out one character at a time
+  
   const typeChar = useCallback(() => {
     if (!pendingRef.current) return;
     const { text, color } = pendingRef.current;
@@ -133,11 +126,11 @@ const LiveTerminal = memo(() => {
     setTypingColor(color);
 
     if (charIdxRef.current < text.length) {
-      // vary speed slightly for realism
+      
       const delay = 18 + Math.random() * 22;
       typingTimer.current = setTimeout(typeChar, delay);
     } else {
-      // line complete — commit it
+      
       setLines(prev => {
         const next = [...prev, { text, color }];
         return next.length > VISIBLE_LINES ? next.slice(next.length - VISIBLE_LINES) : next;
@@ -148,7 +141,7 @@ const LiveTerminal = memo(() => {
     }
   }, []);
 
-  // Kick off typing a new line every INTERVAL_MS
+  
   useEffect(() => {
     const tick = () => {
       if (!pendingRef.current) {
@@ -176,14 +169,14 @@ const LiveTerminal = memo(() => {
     }}
     className="analysis-panel-left"
     >
-      {/* Red top accent */}
+      
       <div style={{
         position: 'absolute', top: 0, left: 0, right: 0, height: '2px',
         background: 'linear-gradient(90deg, #ff2a2a, transparent)',
         borderRadius: '6px 6px 0 0',
       }} />
 
-      {/* Terminal header bar */}
+      
       <div style={{
         display: 'flex', alignItems: 'center', gap: '6px',
         padding: '0.65rem 0.85rem 0.5rem',
@@ -200,21 +193,21 @@ const LiveTerminal = memo(() => {
         }}>SPECTER // LIVE ANALYSIS</span>
       </div>
 
-      {/* Scrolling lines area */}
+      
       <div style={{
         padding: '0.5rem 0.85rem 0.5rem',
         height: '220px',
         overflow: 'hidden',
         position: 'relative',
       }}>
-        {/* Fade-out top mask */}
+        
         <div style={{
           position: 'absolute', top: 0, left: 0, right: 0, height: '40px',
           background: 'linear-gradient(to bottom, rgba(8,11,16,0.95), transparent)',
           zIndex: 2, pointerEvents: 'none',
         }} />
 
-        {/* Committed lines */}
+        
         <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', minHeight: '100%' }}>
           {lines.map((line, i) => (
             <div key={i} style={{
@@ -231,7 +224,7 @@ const LiveTerminal = memo(() => {
             </div>
           ))}
 
-          {/* Currently-typing line with blinking cursor */}
+          
           {typing && (
             <div style={{
               fontSize: '10px',
@@ -254,7 +247,7 @@ const LiveTerminal = memo(() => {
         </div>
       </div>
 
-      {/* Status bar */}
+      
       <div style={{
         borderTop: '1px solid rgba(255,255,255,0.05)',
         padding: '0.35rem 0.85rem',
@@ -268,7 +261,7 @@ const LiveTerminal = memo(() => {
         </span>
       </div>
 
-      {/* Cursor blink keyframe */}
+      
       <style>{`
         @keyframes termCursor {
           0%, 100% { opacity: 1; }
@@ -279,7 +272,7 @@ const LiveTerminal = memo(() => {
   );
 });
 
-// ─── Right panel — DNS Intelligence (unchanged) ──────────────────
+
 const FLOAT_RIGHT = {
   animate: {
     y: [0, -9, 4, 0],
@@ -301,7 +294,7 @@ const RightPanel = memo(() => (
     }}
     className="analysis-panel-right"
   >
-    {/* Cyan top accent */}
+    
     <div style={{
       position: 'absolute', top: 0, left: 0, right: 0, height: '2px',
       background: 'linear-gradient(90deg, #00aaff, transparent)',
@@ -325,7 +318,7 @@ const RightPanel = memo(() => (
       </React.Fragment>
     ))}
 
-    {/* Scan line */}
+    
     <motion.div
       style={{
         position: 'absolute', left: 0, right: 0, height: '1px',
@@ -338,7 +331,7 @@ const RightPanel = memo(() => (
   </motion.div>
 ));
 
-// ─── Export ──────────────────────────────────────────────────────
+
 export default function AnalysisPanels() {
   return (
     <>

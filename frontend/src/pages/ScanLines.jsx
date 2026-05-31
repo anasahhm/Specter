@@ -1,9 +1,3 @@
-/**
- * ScanLines
- * Subtle horizontal scanner sweeps and data pulse lines.
- * Very low opacity, blend into background.
- * Pointer-events: none.
- */
 import React, { memo } from 'react';
 
 export default memo(function ScanLines() {
@@ -18,7 +12,7 @@ export default memo(function ScanLines() {
         overflow: 'hidden',
       }}
     >
-      {/* Main horizontal scanner */}
+      
       <div style={{
         position: 'absolute',
         left: 0,
@@ -29,7 +23,7 @@ export default memo(function ScanLines() {
         willChange: 'transform',
       }} />
 
-      {/* Secondary slower scanner */}
+      
       <div style={{
         position: 'absolute',
         left: 0,
@@ -40,7 +34,6 @@ export default memo(function ScanLines() {
         willChange: 'transform',
       }} />
 
-      {/* Data pulse lines – static horizontal rules at subtle opacity */}
       {[15, 35, 55, 72, 88].map((pct, i) => (
         <div key={i} style={{
           position: 'absolute',

@@ -1,23 +1,7 @@
-/**
- * LandingPage.jsx — SPECTER
- * 
- * All existing functionality, routes, and layout preserved.
- * Visual enhancements added:
- *  1. ThreatLogBackground   – floating intel logs (z:1)
- *  2. ScanLines             – horizontal sweep lines (z:2)
- *  3. AnalysisPanels        – glassmorphism threat panels (z:8)
- *  4. HUDRings              – rotating rings around Eye (z:6)
- *  5. AlertFlash            – rare security pulse (z:9)
- *  6. CyberButton           – scramble-text CTA buttons
- *
- * Fonts: Orbitron (headings) + Geist Mono (body/mono) loaded via @import.
- */
 import React, { memo } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, Shield, Zap, TrendingUp, Lock, Eye, AlertTriangle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-
-// ── Enhancement components ─────────────────────────────────────
 import ThreatLogBackground from './ThreatLogBackground';
 import AnalysisPanels      from './AnalysisPanels';
 import HUDRings            from './HUDRings';
@@ -113,36 +97,33 @@ export default function LandingPage() {
         </motion.div>
       </header>
 
-      {/* ══════════════════════════════════════════════════════════
-          HERO SECTION
-      ══════════════════════════════════════════════════════════ */}
+
       <section className="relative w-full h-screen bg-spec-bg overflow-hidden flex items-center justify-center" style={{ paddingTop: 0 }}>
 
-        {/* ── Enhancement 1: Floating threat log background ─── */}
         <ThreatLogBackground />
 
-        {/* ── Enhancement 7: Scan lines ────────────────────── */}
+        
         <ScanLines />
 
-        {/* ── Background gradient blobs — UNCHANGED ─────────── */}
+        
         <div className="absolute inset-0 z-0 pointer-events-none">
           <div className="absolute inset-0 bg-gradient-to-b from-spec-bg via-spec-surface/50 to-spec-bg opacity-60" />
           <div className="absolute top-0 left-1/4 w-96 h-96 bg-spec-accent/5 rounded-full blur-3xl" />
           <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-spec-info/5 rounded-full blur-3xl" />
         </div>
 
-        {/* ── Enhancement 2: Glassmorphism panels ─────────── */}
+      
         <AnalysisPanels />
 
-        {/* ── Enhancement 4: Alert flashes ────────────────── */}
+        
         <AlertFlash />
 
-        {/* ── HUD Rings — center decorative rings, no eye ────── */}
+      
         <div className="absolute z-5 flex items-center justify-center pointer-events-none">
           <HUDRings size={480} />
         </div>
 
-        {/* ── Top Right Heading — UNCHANGED ─────────────────── */}
+        
         <motion.div
           initial={{ opacity: 0, y: -30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -159,7 +140,7 @@ export default function LandingPage() {
           </div>
         </motion.div>
 
-        {/* ── CENTER: Main heading — fixed to true viewport center ── */}
+        
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -182,7 +163,7 @@ export default function LandingPage() {
           }} />
         </motion.div>
 
-        {/* ── BOTTOM-LEFT: Sub-heading + body + CTA ─────────── */}
+        
         <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -196,7 +177,7 @@ export default function LandingPage() {
           <motion.p variants={itemVariants} className="text-sm text-gray-400 specter-mono leading-relaxed mb-6" style={{ maxWidth: '28rem' }}>
             Wire-powered analysis identifies malicious URLs before you click. Real-time intelligence across phishing schemes, brand impersonation, and credential harvesting attacks.
           </motion.p>
-          {/* ── Enhancement 5+6: CyberButton CTAs ─────────── */}
+          
           <motion.div variants={itemVariants} className="flex flex-row gap-4">
             <CyberButton
               label="Start Investigation"
@@ -211,7 +192,7 @@ export default function LandingPage() {
           </motion.div>
         </motion.div>
 
-        {/* ── BOTTOM-RIGHT: Protection Redefined + scroll ───── */}
+        
         <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -234,7 +215,7 @@ export default function LandingPage() {
           </motion.div>
         </motion.div>
 
-        {/* Floating geometric decorators — UNCHANGED */}
+      
         <motion.div
           className="absolute top-20 right-10 w-20 h-20 border-2 border-spec-accent/20 rounded-lg pointer-events-none z-15"
           animate={{
@@ -253,9 +234,7 @@ export default function LandingPage() {
         />
       </section>
 
-      {/* ══════════════════════════════════════════════════════════
-          MARQUEE SECTION — UNCHANGED
-      ══════════════════════════════════════════════════════════ */}
+    
       <section className="relative z-10 py-20 px-8 bg-spec-bg overflow-hidden">
         <div className="max-w-7xl mx-auto mb-20">
           <motion.h3
@@ -303,9 +282,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ══════════════════════════════════════════════════════════
-          COMPREHENSIVE INTELLIGENCE — UNCHANGED
-      ══════════════════════════════════════════════════════════ */}
+      
       <section className="relative z-10 py-20 px-8 bg-spec-bg">
         <motion.div
           variants={containerVariants}

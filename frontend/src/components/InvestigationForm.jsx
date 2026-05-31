@@ -11,7 +11,7 @@ export default function InvestigationForm({ onClose, onSuccess }) {
   const navigate = useNavigate();
 
   const targetTypes = [
-    { value: 'url', label: '🌐 URL / Website', placeholder: 'google.com or https://suspicious-site.com' }
+    { value: 'url', label: 'URL / Website', placeholder: 'google.com or https://suspicious-site.com' }
   ];
 
   const handleSubmit = async (e) => {
@@ -33,10 +33,10 @@ export default function InvestigationForm({ onClose, onSuccess }) {
       animate={{ opacity: 1, scale: 1 }}
       className="relative bg-spec-surface border border-spec-border/50 rounded-lg overflow-hidden"
     >
-      {/* Background gradient effect */}
+      
       <div className="absolute inset-0 bg-gradient-to-br from-spec-accent/5 to-spec-info/5 pointer-events-none" />
 
-      {/* Close button */}
+      
       <button
         onClick={onClose}
         className="absolute top-4 right-4 z-10 p-2 hover:bg-spec-surface/50 rounded-lg transition-colors border border-transparent hover:border-spec-border/50"
@@ -49,7 +49,7 @@ export default function InvestigationForm({ onClose, onSuccess }) {
         <p className="text-gray-400 mb-6 font-serif">Analyze any digital entity for threats and suspicious activity</p>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Target Type Selector */}
+          
           <div>
             <label className="block text-sm font-semibold text-white mb-3 font-sans uppercase tracking-wider">What would you like to investigate?</label>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
@@ -72,7 +72,7 @@ export default function InvestigationForm({ onClose, onSuccess }) {
             </div>
           </div>
 
-          {/* Target Input */}
+          
           <div>
             <label className="block text-sm font-semibold text-white mb-2 font-sans uppercase tracking-wider">
               {targetTypes.find(t => t.value === targetType)?.label}
@@ -95,7 +95,7 @@ export default function InvestigationForm({ onClose, onSuccess }) {
             </div>
           )}
 
-          {/* Submit Button */}
+          
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}

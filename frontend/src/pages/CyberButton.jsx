@@ -1,18 +1,3 @@
-/**
- * CyberButton
- * Premium dark glass CTA button with:
- *  - Cryptic text scramble on idle (every ~8s) and on hover
- *  - Border scanning energy streak
- *  - Animated gradient glow on hover
- *  - Metallic depth
- * 
- * Props:
- *   label     {string}   – the real button text
- *   onClick   {fn}       – click handler
- *   icon      {ReactNode} – optional right icon
- *   variant   {'primary'|'secondary'} – style variant
- *   className {string}   – additional classes
- */
 import React, { useState, useEffect, useRef, useCallback, memo } from 'react';
 
 const GLITCH_CHARS = '!@#$%^&*_-+=<>?/\\|[]{}0123456789';
@@ -27,7 +12,7 @@ function leetify(str) {
 }
 
 function scramble(str, progress) {
-  // progress 0 = fully scrambled, 1 = original
+  
   return str.split('').map((char, i) => {
     if (char === ' ') return ' ';
     if (Math.random() < progress) return char;
@@ -39,7 +24,7 @@ function useScrambleText(label, active) {
   const [display, setDisplay] = useState(label);
   const frameRef = useRef(null);
   const progressRef = useRef(1);
-  const dirRef = useRef('idle'); // 'scrambling' | 'resolving' | 'idle'
+  const dirRef = useRef('idle'); 
 
   const animate = useCallback(() => {
     if (dirRef.current === 'scrambling') {
@@ -66,7 +51,7 @@ function useScrambleText(label, active) {
     }
   }, [label]);
 
-  // Trigger scramble
+
   const triggerScramble = useCallback(() => {
     cancelAnimationFrame(frameRef.current);
     progressRef.current = 1;
@@ -74,12 +59,12 @@ function useScrambleText(label, active) {
     frameRef.current = requestAnimationFrame(animate);
   }, [animate]);
 
-  // Hover: instant scramble then resolve
+  
   useEffect(() => {
     if (active) {
       triggerScramble();
     } else {
-      // Resolve immediately on unhover
+      
       if (dirRef.current !== 'idle') {
         cancelAnimationFrame(frameRef.current);
         dirRef.current = 'resolving';
@@ -89,7 +74,7 @@ function useScrambleText(label, active) {
     }
   }, [active, triggerScramble, animate]);
 
-  // Idle scramble every 8–12s
+
   useEffect(() => {
     let timeout;
     function scheduleIdle() {
@@ -105,7 +90,7 @@ function useScrambleText(label, active) {
     };
   }, [triggerScramble]);
 
-  // Sync label changes
+  
   useEffect(() => {
     if (dirRef.current === 'idle') setDisplay(label);
   }, [label]);
@@ -113,7 +98,7 @@ function useScrambleText(label, active) {
   return display;
 }
 
-// Energy streak (border scanner)
+
 const EnergyStreak = memo(({ active, color }) => (
   <div
     style={{
@@ -230,15 +215,15 @@ export default memo(function CyberButton({
         transition: 'opacity 0.3s',
       }} />
 
-      {/* Energy streak */}
+      
       <EnergyStreak active={hovered} color={isPrimary ? '#ff2a2a' : '#00aaff'} />
 
-      {/* Scrambling text */}
+      
       <span style={{ fontFamily: 'inherit', letterSpacing: 'inherit', minWidth: '12ch', textAlign: 'center' }}>
         {displayText}
       </span>
 
-      {/* Icon */}
+      
       {icon && (
         <span style={{
           transform: hovered ? 'translateX(3px)' : 'translateX(0)',
