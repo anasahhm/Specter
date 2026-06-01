@@ -2,7 +2,7 @@
 
 > Analyze any URL in seconds. Detect phishing, malware, and suspicious behavior with real-time threat intelligence powered by AI.
 
-**Live Demo:** [Frontend](https://specter-weld.vercel.app/)
+**Live Demo:** [Click here](https://specter-weld.vercel.app/)
 
 ---
 
