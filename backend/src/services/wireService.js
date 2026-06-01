@@ -97,11 +97,13 @@ class WireService {
   }
 
 
-  async pollJob(jobId, maxAttempts = 30, intervalMs = 3000) {
-    console.log(`[WIRE] Polling job ${jobId} (max ${maxAttempts} × ${intervalMs}ms = ${(maxAttempts * intervalMs) / 1000}s timeout)`);
+  async pollJob(jobId, maxAttempts = 60, intervalMs = 3000) {
+    console.log(`[WIRE] Polling job ${jobId} (max ${maxAttempts} attempts with backoff = ~180s+ timeout)`);
 
     for (let i = 0; i < maxAttempts; i++) {
-      await sleep(intervalMs);
+      
+      const backoffMs = Math.min(1000 + i * 500, 10000);
+      await sleep(backoffMs);
 
       let res;
       try {
@@ -139,12 +141,10 @@ class WireService {
           'JOB_FAILED'
         );
       }
-
-    
     }
 
     throw new WireError(
-      `Wire job ${jobId} timed out after ${maxAttempts} attempts (${(maxAttempts * intervalMs) / 1000}s)`,
+      `Wire job ${jobId} timed out after ${maxAttempts} attempts (max ~180s)`,
       'TIMEOUT'
     );
   }
