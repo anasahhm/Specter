@@ -24,7 +24,7 @@ export const POLLING_MODES = {
   }
 };
 
-export const CURRENT_MODE = POLLING_MODES.HACKATHON;
+export const CURRENT_MODE = POLLING_MODES.PRODUCTION;
 
 console.log(` Polling Mode: ${CURRENT_MODE.description}`);
 console.log(` Max wait time: ~${Math.ceil((CURRENT_MODE.maxRetries * CURRENT_MODE.baseDelay) / 1000 / 60)} minutes`);
