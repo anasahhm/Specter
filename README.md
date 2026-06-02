@@ -2,7 +2,7 @@
 
 Real-time URL threat analysis. Wire API extracts technical signals, Google Generative AI recognizes behavioral patterns, deterministic scoring outputs risk (0-100). Async architecture handles 120s Wire API + 45s AI calls without blocking.
 
-**[Live Demo](https://specter-weld.vercel.app) **
+[Live Demo](https://specter-weld.vercel.app)
 
 ---
 
