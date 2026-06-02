@@ -272,70 +272,10 @@ const LiveTerminal = memo(() => {
 });
 
 
-const FLOAT_RIGHT = {
-  animate: {
-    y: [0, -9, 4, 0],
-    transition: { duration: 8, repeat: Infinity, ease: 'easeInOut', delay: 1.5 },
-  },
-};
-
-const RightPanel = memo(() => (
-  <motion.div
-    variants={FLOAT_RIGHT}
-    animate="animate"
-    style={{
-      ...panelBase,
-      right: '2.5%',
-      top: 'calc(42% - 1.5rem)',
-      transform: 'translateY(-50%)',
-      padding: '1.1rem 1.3rem',
-      minWidth: '170px',
-    }}
-    className="analysis-panel-right"
-  >
-    
-    <div style={{
-      position: 'absolute', top: 0, left: 0, right: 0, height: '2px',
-      background: 'linear-gradient(90deg, #00aaff, transparent)',
-      borderRadius: '6px 6px 0 0',
-    }} />
-
-    <div style={{ ...panelHeaderStyle, color: 'rgba(0,170,255,0.7)' }}>DNS Intelligence</div>
-
-    {[
-      { label: 'Domain Age',  value: '3 Days',  color: '#ff6b6b' },
-      { label: 'SSL',         value: 'Invalid', color: '#ff2a2a' },
-      { label: 'Redirects',   value: '5',       color: '#ff9500' },
-      { label: 'Confidence',  value: '94%',     color: '#00aaff' },
-    ].map(({ label, value, color }, i) => (
-      <React.Fragment key={i}>
-        {i > 0 && <div style={divider} />}
-        <div style={{ marginBottom: i < 3 ? '0' : undefined }}>
-          <div style={labelStyle}>{label}</div>
-          <div style={{ ...valueStyle, color }}>{value}</div>
-        </div>
-      </React.Fragment>
-    ))}
-
-    
-    <motion.div
-      style={{
-        position: 'absolute', left: 0, right: 0, height: '1px',
-        background: 'linear-gradient(90deg, transparent, rgba(0,170,255,0.3), transparent)',
-        pointerEvents: 'none',
-      }}
-      animate={{ top: ['10%', '90%', '10%'] }}
-      transition={{ duration: 5.5, repeat: Infinity, ease: 'linear', delay: 1 }}
-    />
-  </motion.div>
-));
-
-
 export default function AnalysisPanels() {
   return (
     <>
       <LiveTerminal />
-      <RightPanel />
       <style>{`
         @media (max-width: 900px) {
           .analysis-panel-left,
