@@ -198,8 +198,8 @@ export default function Auth() {
         
         <motion.div variants={itemVariants} className="mt-6 p-4 rounded-lg border border-spec-border/30 bg-spec-surface/20">
           <p className="text-xs text-gray-500 mb-2"></p>
-          <p className="text-xs text-gray-400">Email: <span className="text-spec-accent"></span></p>
-          <p className="text-xs text-gray-400">Password: <span className="text-spec-accent"></span></p>
+          <p className="text-xs text-gray-400"><span className="text-spec-accent"></span></p>
+          <p className="text-xs text-gray-400"><span className="text-spec-accent"></span></p>
         </motion.div>
       </motion.div>
     </div>
