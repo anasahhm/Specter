@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { getPollingConfig, getBackoffDelay } from './PollingModes-Fixed.js';
 
 export function normalizeUrl(rawUrl) {
   if (!rawUrl || typeof rawUrl !== 'string') throw new Error('URL is required');
@@ -7,14 +8,14 @@ export function normalizeUrl(rawUrl) {
   return `https://${trimmed}`;
 }
 
-// WIRE SERVICE  (powered by Anakin.io)
+/**
+ * WIRE SERVICE - Updated to use time-based polling modes
+ * Powered by Anakin.io
+ */
 class WireService {
   constructor() {
     this.apiKey  = process.env.WIRE_API_KEY || null;
     this.baseUrl = (process.env.WIRE_API_BASE || 'https://api.anakin.io/v1').replace(/\/$/, '');
-    // FIX: Separate polling timeout from total job timeout
-    this.POLL_TIMEOUT_MS = 180000;  // 3 minutes for polling total
-    this.SINGLE_POLL_TIMEOUT_MS = 15000; // 15 seconds per individual request
 
     if (!this.apiKey) {
       console.error('[WIRE] ❌ WIRE_API_KEY is not set. Investigations will fail.');
@@ -77,7 +78,7 @@ class WireService {
       );
     }
 
-    // FIX: Use proper polling with time-based timeout
+    // Use time-based polling with modes
     const result = await this.pollJob(jobId);
 
     console.log(`[WIRE] ✓ Scrape completed for: ${url}`);
@@ -96,32 +97,35 @@ class WireService {
   }
 
   /**
-   * FIX: Improved polling with time-based timeout instead of attempt-based
-   * Rationale:
-   * - Backoff intervals vary, so 60 attempts ≠ 60 seconds of actual waiting
-   * - Use absolute deadline instead to be predictable
+   * Poll job using time-based deadline from polling modes
+   * Gets config from getPollingConfig() to support runtime mode switching
    */
   async pollJob(jobId) {
+    const pollingConfig = getPollingConfig();
     const startTime = Date.now();
-    const deadline = startTime + this.POLL_TIMEOUT_MS;
+    const deadline = startTime + pollingConfig.timeoutMs;
     let attemptNum = 0;
 
-    console.log(`[WIRE] Polling job ${jobId} (max ${this.POLL_TIMEOUT_MS}ms timeout)`);
+    console.log(`[WIRE] Polling job ${jobId}`);
+    console.log(`[WIRE]   Mode: ${pollingConfig.description}`);
+    console.log(`[WIRE]   Timeout: ${pollingConfig.timeoutMs}ms (${pollingConfig.timeoutMs / 1000}s)`);
+    console.log(`[WIRE]   Per-request: ${pollingConfig.perRequestTimeoutMs}ms`);
 
     while (Date.now() < deadline) {
       attemptNum++;
 
-      // Calculate backoff with exponential growth, capped at 10s
-      const backoffMs = Math.min(1000 + (attemptNum - 1) * 500, 10000);
+      // Calculate backoff using polling mode config
+      const backoffMs = getBackoffDelay(attemptNum - 1, pollingConfig);
       console.log(`[WIRE] Poll ${attemptNum} – waiting ${backoffMs}ms before request...`);
       
       await sleep(backoffMs);
 
-      // Check deadline again after sleep
-      if (Date.now() >= deadline) {
+      // Check deadline after sleep
+      const timeRemaining = deadline - Date.now();
+      if (timeRemaining <= 0) {
         const elapsed = Date.now() - startTime;
         throw new WireError(
-          `Wire job ${jobId} timed out after ${elapsed}ms (deadline: ${this.POLL_TIMEOUT_MS}ms)`,
+          `Wire job ${jobId} timed out after ${elapsed}ms (timeout: ${pollingConfig.timeoutMs}ms)`,
           'TIMEOUT'
         );
       }
@@ -132,19 +136,20 @@ class WireService {
           `${this.baseUrl}/url-scraper/${jobId}`,
           {
             headers: { 'X-API-Key': this.apiKey },
-            timeout: this.SINGLE_POLL_TIMEOUT_MS
+            timeout: pollingConfig.perRequestTimeoutMs
           }
         );
       } catch (err) {
         const httpStatus = err.response?.status;
         const elapsed = Date.now() - startTime;
+        const remaining = deadline - Date.now();
         
         console.warn(
-          `[WIRE] Poll ${attemptNum} failed after ${elapsed}ms (HTTP ${httpStatus ?? 'none'}): ${err.message}`
+          `[WIRE] Poll ${attemptNum} failed after ${elapsed}ms (${Math.ceil(remaining / 1000)}s remaining): ${err.message}`
         );
 
         // If we're out of time, fail immediately
-        if (Date.now() >= deadline) {
+        if (remaining <= 0) {
           throw new WireError(
             `Wire poll timeout after ${elapsed}ms: ${err.message}`,
             'POLL_FAILED',
@@ -158,7 +163,9 @@ class WireService {
 
       const status = res.data?.status;
       const elapsed = Date.now() - startTime;
-      console.log(`[WIRE] Poll ${attemptNum} – status: ${status} (elapsed: ${elapsed}ms)`);
+      const remaining = Math.ceil((deadline - Date.now()) / 1000);
+      
+      console.log(`[WIRE] Poll ${attemptNum} – status: ${status} (${elapsed}ms elapsed, ${remaining}s remaining)`);
 
       if (status === 'completed') {
         console.log(`[WIRE] ✓ Job ${jobId} completed in ${elapsed}ms`);
@@ -178,7 +185,7 @@ class WireService {
     // Deadline exceeded
     const elapsed = Date.now() - startTime;
     throw new WireError(
-      `Wire job ${jobId} exceeded deadline (${this.POLL_TIMEOUT_MS}ms) after ${attemptNum} attempts`,
+      `Wire job ${jobId} exceeded timeout (${pollingConfig.timeoutMs}ms) after ${attemptNum} attempts in ${elapsed}ms`,
       'TIMEOUT'
     );
   }
