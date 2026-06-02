@@ -23,7 +23,7 @@ export default function Navigation() {
         {/* Logo - Left */}
         <motion.button
           onClick={() => navigate('/dashboard')}
-          className="flex items-center hover:opacity-80 transition-opacity"
+          className="flex items-center hover:opacity-80 transition-opacity -ml-2"
         >
           <h1 className="text-xl font-bold text-white font-mono tracking-widest">SPECTER</h1>
         </motion.button>
