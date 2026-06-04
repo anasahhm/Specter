@@ -52,10 +52,11 @@ class AIService {
             }
           ],
           generationConfig: {
-                                temperature: 0.1,
-                                maxOutputTokens: 2048,
-                                responseMimeType: "application/json"
-                            }
+            temperature: 0.1,
+            maxOutputTokens: 2048
+            // REMOVED: responseMimeType - it causes incomplete responses
+            // Let Gemini return text naturally
+          }
         },
         {
           headers: {
@@ -78,7 +79,8 @@ class AIService {
         throw new Error('No response text from Gemini');
       }
 
-      console.log(`[AI] Gemini response received in ${elapsed}ms`);
+      console.log(`[AI] Gemini response received in ${elapsed}ms (${text.length} chars)`);
+      console.log(`[AI] Response preview: ${text.substring(0, 200)}...`);
       return this._parseResponse(text, targetValue, wireData);
     } catch (err) {
       const elapsed = Date.now() - startTime;
@@ -100,75 +102,83 @@ class AIService {
   _buildPrompt(targetType, targetValue, wireData) {
     const wj = wireData?.generatedJson || {};
 
-    return `
-You are a senior cybersecurity threat analyst.
+    return `You are a senior cybersecurity threat analyst. Your job is to analyze website data and return ONLY valid JSON.
 
-Analyze the following website intelligence collected from a live Wire API scrape.
+CRITICAL: Your entire response must be valid JSON. Do not add any text before or after the JSON. No markdown. No code blocks. Only JSON.
 
-URL:
-${targetValue}
+Analyze this website:
 
-TITLE:
-${wj.title || 'Unknown'}
+URL: ${targetValue}
+Title: ${wj.title || 'Unknown'}
+Description: ${wj.description || 'None'}
+Page Type: ${wj.pageType || 'Unknown'}
+Links: ${JSON.stringify((wj.links || []).slice(0, 5))}
+Content Sections: ${JSON.stringify((wj.sections || []).slice(0, 3))}
+Content: ${(wireData?.markdown || '').substring(0, 2000)}
 
-DESCRIPTION:
-${wj.description || 'None'}
-
-PAGE TYPE:
-${wj.pageType || 'Unknown'}
-
-METADATA:
-${JSON.stringify(wj.metadata || {}, null, 2)}
-
-LINKS:
-${JSON.stringify((wj.links || []).slice(0, 20), null, 2)}
-
-SECTIONS:
-${JSON.stringify((wj.sections || []).slice(0, 5), null, 2)}
-
-SCRAPED CONTENT:
-${(wireData?.markdown || '').substring(0, 4000)}
-
-IMPORTANT RULES:
-
-1. Use ONLY the supplied data.
-2. Do NOT invent information.
-3. Do NOT wrap output in markdown.
-4. Return VALID JSON ONLY.
-5. Every field must exist.
-
-Return EXACTLY:
+Your response MUST be exactly this JSON structure with no modifications:
 
 {
-  "summary": "brief threat assessment",
-  "suspiciousPatterns": [],
-  "behavioralInsights": [],
-  "linkedIdentities": [],
-  "recommendations": []
+  "summary": "one sentence threat assessment",
+  "suspiciousPatterns": ["pattern1", "pattern2"],
+  "behavioralInsights": ["insight1"],
+  "linkedIdentities": ["identity1"],
+  "recommendations": ["recommendation1"]
 }
-`;
+
+Rules:
+1. Return ONLY the JSON object
+2. No markdown, no code blocks, no text outside JSON
+3. All arrays must exist (use empty arrays [] if none)
+4. All strings must be valid UTF-8
+5. Escape any special characters in strings`;
   }
 
   _parseResponse(raw, targetValue, wireData) {
     try {
       let cleaned = raw.trim();
 
+      // Log full response for debugging (not just 500 chars)
+      console.log(`[AI] Full response length: ${cleaned.length} characters`);
+
+      // Remove markdown code blocks
       cleaned = cleaned
-        .replace(/^```json/i, '')
-        .replace(/^```/, '')
-        .replace(/```$/, '')
+        .replace(/^```json\n?/i, '')
+        .replace(/^```\n?/i, '')
+        .replace(/\n?```$/i, '')
         .trim();
 
+      console.log(`[AI] After markdown cleanup: ${cleaned.length} characters`);
+
+      // Find first { and last }
       const start = cleaned.indexOf('{');
       const end = cleaned.lastIndexOf('}');
 
-      if (start === -1 || end === -1) {
-        throw new Error('No JSON object found');
+      console.log(`[AI] JSON markers - start: ${start}, end: ${end}`);
+
+      if (start === -1 || end === -1 || start >= end) {
+        console.error(`[AI] Invalid JSON structure: start=${start}, end=${end}`);
+        console.error(`[AI] Response sample: ${cleaned.substring(0, 300)}`);
+        throw new Error('No valid JSON object found in response');
       }
 
+      // Extract JSON
       cleaned = cleaned.slice(start, end + 1);
 
-      const parsed = JSON.parse(cleaned);
+      console.log(`[AI] Extracted JSON: ${cleaned.length} characters`);
+
+      // Try to parse
+      let parsed;
+      try {
+        parsed = JSON.parse(cleaned);
+      } catch (parseErr) {
+        console.error(`[AI] JSON parse error: ${parseErr.message}`);
+        console.error(`[AI] Invalid JSON: ${cleaned.substring(0, 500)}`);
+        throw new Error(`Invalid JSON from Gemini: ${parseErr.message}`);
+      }
+
+      // Validate and construct response
+      console.log(`[AI] ✓ Successfully parsed JSON from Gemini`);
 
       return {
         summary:
@@ -178,47 +188,45 @@ Return EXACTLY:
 
         suspiciousPatterns:
           Array.isArray(parsed.suspiciousPatterns)
-            ? parsed.suspiciousPatterns
+            ? parsed.suspiciousPatterns.filter(p => typeof p === 'string')
             : [],
 
         behavioralInsights:
           Array.isArray(parsed.behavioralInsights)
-            ? parsed.behavioralInsights
+            ? parsed.behavioralInsights.filter(i => typeof i === 'string')
             : [],
 
         linkedIdentities:
-        Array.isArray(parsed.linkedIdentities)
-          ? parsed.linkedIdentities.map(item => {
-              if (typeof item === 'string') {
-                return { username: item, platform: 'Unknown', confidence: 50 };
-              }
-              if (typeof item === 'object' && item !== null) {
-                return {
-                  username:   item.username   || item.name  || item.value || 'Unknown',
-                  platform:   item.platform   || item.type  || 'Unknown',
-                  confidence: item.confidence ?? 50
-                };
-              }
-              return { username: 'Unknown', platform: 'Unknown', confidence: 50 };
-            })
-          : [],
+          Array.isArray(parsed.linkedIdentities)
+            ? parsed.linkedIdentities.map(item => {
+                if (typeof item === 'string') {
+                  return { username: item, platform: 'Unknown', confidence: 50 };
+                }
+                if (typeof item === 'object' && item !== null) {
+                  return {
+                    username: item.username || item.name || item.value || 'Unknown',
+                    platform: item.platform || item.type || 'Unknown',
+                    confidence: item.confidence ?? 50
+                  };
+                }
+                return { username: 'Unknown', platform: 'Unknown', confidence: 50 };
+              })
+            : [],
 
         recommendations:
           Array.isArray(parsed.recommendations)
-            ? parsed.recommendations
+            ? parsed.recommendations.filter(r => typeof r === 'string')
             : [],
 
         source: 'gemini'
       };
     } catch (err) {
       console.warn(`[AI] Failed to parse Gemini response: ${err.message}`);
-      console.warn(`[AI] Raw response: ${raw.substring(0, 500)}`);
+      console.warn(`[AI] Response first 1000 chars: ${raw.substring(0, 1000)}`);
 
-      return this._ruleBasedAnalysis(
-        'url',
-        targetValue,
-        wireData
-      );
+      // Fallback to rule-based analysis
+      console.log(`[AI] Using rule-based fallback analysis`);
+      return this._ruleBasedAnalysis('url', targetValue, wireData);
     }
   }
 
