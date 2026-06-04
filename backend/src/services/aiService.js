@@ -97,10 +97,10 @@ class AIService {
     }
   }
 
-_buildPrompt(targetType, targetValue, wireData) {
-  const wj = wireData?.generatedJson || {};
+  _buildPrompt(targetType, targetValue, wireData) {
+    const wj = wireData?.generatedJson || {};
 
-  return `
+    return `
 You are a senior cybersecurity threat analyst.
 
 Analyze the following website intelligence collected from a live Wire API scrape.
@@ -147,81 +147,80 @@ Return EXACTLY:
   "recommendations": []
 }
 `;
-}
-
-
-_parseResponse(raw, targetValue, wireData) {
-  try {
-    let cleaned = raw.trim();
-
-    cleaned = cleaned
-      .replace(/^```json/i, '')
-      .replace(/^```/, '')
-      .replace(/```$/, '')
-      .trim();
-
-    const start = cleaned.indexOf('{');
-    const end = cleaned.lastIndexOf('}');
-
-    if (start === -1 || end === -1) {
-      throw new Error('No JSON object found');
-    }
-
-    cleaned = cleaned.slice(start, end + 1);
-
-    const parsed = JSON.parse(cleaned);
-
-    return {
-      summary:
-        typeof parsed.summary === 'string'
-          ? parsed.summary
-          : 'Analysis completed.',
-
-      suspiciousPatterns:
-        Array.isArray(parsed.suspiciousPatterns)
-          ? parsed.suspiciousPatterns
-          : [],
-
-      behavioralInsights:
-        Array.isArray(parsed.behavioralInsights)
-          ? parsed.behavioralInsights
-          : [],
-
-      linkedIdentities:
-  Array.isArray(parsed.linkedIdentities)
-    ? parsed.linkedIdentities.map(item => {
-        if (typeof item === 'string') {
-          return { username: item, platform: 'Unknown', confidence: 50 };
-        }
-        if (typeof item === 'object' && item !== null) {
-          return {
-            username:   item.username   || item.name  || item.value || 'Unknown',
-            platform:   item.platform   || item.type  || 'Unknown',
-            confidence: item.confidence ?? 50
-          };
-        }
-        return { username: 'Unknown', platform: 'Unknown', confidence: 50 };
-      })
-    : [],
-
-      recommendations:
-        Array.isArray(parsed.recommendations)
-          ? parsed.recommendations
-          : [],
-
-      source: 'gemini'
-    };
-  } catch (err) {
-    console.warn(`[AI] Failed to parse Gemini response: ${err.message}`);
-    console.warn(`[AI] Raw response: ${raw.substring(0, 500)}`);
-
-    return this._ruleBasedAnalysis(
-      'url',
-      targetValue,
-      wireData
-    );
   }
-}
+
+  _parseResponse(raw, targetValue, wireData) {
+    try {
+      let cleaned = raw.trim();
+
+      cleaned = cleaned
+        .replace(/^```json/i, '')
+        .replace(/^```/, '')
+        .replace(/```$/, '')
+        .trim();
+
+      const start = cleaned.indexOf('{');
+      const end = cleaned.lastIndexOf('}');
+
+      if (start === -1 || end === -1) {
+        throw new Error('No JSON object found');
+      }
+
+      cleaned = cleaned.slice(start, end + 1);
+
+      const parsed = JSON.parse(cleaned);
+
+      return {
+        summary:
+          typeof parsed.summary === 'string'
+            ? parsed.summary
+            : 'Analysis completed.',
+
+        suspiciousPatterns:
+          Array.isArray(parsed.suspiciousPatterns)
+            ? parsed.suspiciousPatterns
+            : [],
+
+        behavioralInsights:
+          Array.isArray(parsed.behavioralInsights)
+            ? parsed.behavioralInsights
+            : [],
+
+        linkedIdentities:
+        Array.isArray(parsed.linkedIdentities)
+          ? parsed.linkedIdentities.map(item => {
+              if (typeof item === 'string') {
+                return { username: item, platform: 'Unknown', confidence: 50 };
+              }
+              if (typeof item === 'object' && item !== null) {
+                return {
+                  username:   item.username   || item.name  || item.value || 'Unknown',
+                  platform:   item.platform   || item.type  || 'Unknown',
+                  confidence: item.confidence ?? 50
+                };
+              }
+              return { username: 'Unknown', platform: 'Unknown', confidence: 50 };
+            })
+          : [],
+
+        recommendations:
+          Array.isArray(parsed.recommendations)
+            ? parsed.recommendations
+            : [],
+
+        source: 'gemini'
+      };
+    } catch (err) {
+      console.warn(`[AI] Failed to parse Gemini response: ${err.message}`);
+      console.warn(`[AI] Raw response: ${raw.substring(0, 500)}`);
+
+      return this._ruleBasedAnalysis(
+        'url',
+        targetValue,
+        wireData
+      );
+    }
+  }
 
   _ruleBasedAnalysis(targetType, targetValue, wireData) {
     if (targetType !== 'url') {
